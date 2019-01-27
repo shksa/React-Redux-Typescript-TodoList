@@ -1,4 +1,6 @@
-import styled from "../../styled-components";
+import {Link} from 'react-router-dom'
+import styled, {keyframes, css} from "../../styled-components";
+import { theme } from "../App/style";
 
 export const Header = styled.div`
   text-align: center;
@@ -11,26 +13,43 @@ export const UserInputField = styled.input`
   border-radius: 10px;
 `
 
+const Levitate = (bgColor1: string, bgColor2: string) => keyframes`
+  0% {
+    box-shadow: 10px 10px 20px gray;
+    background-color: ${bgColor1};
+  }
+  50% {
+    box-shadow: 5px 5px 20px gray; 
+    background-color: ${bgColor2};
+  }
+  100% {
+    box-shadow: 10px 10px 20px gray;
+    background-color: ${bgColor1};
+  }
+`
+
+const NormalLevitate = Levitate(theme.buttonColor1, theme.buttonColor2)
+const HoverLevitate = Levitate(theme.buttonOnHoverColor1, theme.buttonOnHoverColor2)
+
+
 export const AddTodoButton = styled.button`
   padding: 1em;
   border-radius: 10px;
   cursor: pointer;
-  font-weight: 900;
+  font-weight: bolder;
   font-size: 1em;
-  background-color: lightcoral;
   color: white;
-  box-shadow: 10px 10px 20px gray;
+  animation: ${NormalLevitate} 2s ease-in-out infinite; 
   :hover {
-    box-shadow: 5px 5px 20px gray; 
-  };
-  transition: box-shadow .35s ease-in-out;
+    animation: ${HoverLevitate} 2s ease-in-out infinite; 
+  }
 `
 
 export const PageContainer = styled.div`
-  & > ${Header} {
+  ${Header} {
     margin: 1em;
   }
-  & > ${UserInputField} {
+  ${UserInputField} {
     margin-right: 1em;
   }
 `
@@ -40,27 +59,36 @@ export const Page = styled.div`
   background-color: ${({theme}) => theme.background};
   display: flex;
   justify-content: center;
-  & > ${PageContainer} {
+  ${PageContainer} {
     margin-top: 10%;
   }
 `
 
-export const ToDoItemsList = styled.ul`
+export const ToDoItem = styled.li<{completed: boolean}>`
   font-size: 1em;
+  text-decoration: ${({completed}) => completed && 'line-through'};
+  cursor: pointer;
 `
 
-export const ToDoItem = styled.li``
-
-export const Link = styled.a``
+export const RouteLink = styled(Link)``
 
 export const InlineContainer = styled.div`
   display: flex;
+`
+
+export const ToDoItemsList = styled.ul`
+  ${InlineContainer} {
+    margin: 1em;
+  }
+`
+
+export const Footer = styled(InlineContainer)`
   padding: 0px 0.5em;
   justify-content: center;
-  & > ${Link} {
+  ${RouteLink} {
     margin-right: 1em;
   }
-  & > ${Link} :last-child {
+  ${RouteLink} :last-child {
     margin-right: 0em;
   }
 `

@@ -1,5 +1,5 @@
-import styled, {createGlobalStyle} from './styled-components'
-import ThemeInterface from './styled-components/theme'
+import styled, {createGlobalStyle} from '../../styled-components'
+import ThemeInterface from '../../styled-components/theme'
 
 export const GlobalStyle = createGlobalStyle`
   body {
@@ -26,5 +26,9 @@ export const GlobalStyle = createGlobalStyle`
 export const theme: ThemeInterface = {
   primaryColor: 'white',
   primaryColorInverted: 'black',
-  background: 'beige'
+  background: 'beige',
+  buttonColor1: "red",
+  buttonColor2: "brown",
+  buttonOnHoverColor1: "blueviolet",
+  buttonOnHoverColor2: "blue"
 }
