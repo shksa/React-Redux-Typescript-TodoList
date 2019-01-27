@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom'
 import * as s from './style'
-import { PathParams, FilterValues } from '../App';
+import { PathParams } from '../App';
 
 export interface Props extends RouteComponentProps<PathParams> {} 
 
@@ -9,11 +9,23 @@ interface TodoItem {
   text: string,
   completed: boolean
 }
+
+export enum FilterValues {
+  all = 'all',
+  active = 'active',
+  completed = 'completed'
+}
+
+export const FilterValuesToPathsMap: {[key in FilterValues]: string} = {
+  all: `/${FilterValues.all}`,
+  active: `/${FilterValues.active}`,
+  completed: `/${FilterValues.completed}`
+}
  
 type State = {
   todos: Array<TodoItem>,
   visibleTodos: Array<TodoItem>,
-  currentFilter: FilterValues | undefined
+  currentFilter: FilterValues
 }
  
 class ToDoListPage extends Component<Props, State> {
@@ -25,9 +37,9 @@ class ToDoListPage extends Component<Props, State> {
     this.state = {todos: [], visibleTodos: [], currentFilter: params.filter}
   }
 
-  allTodosPath = `/${FilterValues.all}`
-  activeTodosPath = `/${FilterValues.active}`
-  completedTodosPath = `/${FilterValues.completed}`
+  allTodosPath = FilterValuesToPathsMap.all
+  activeTodosPath = FilterValuesToPathsMap.active
+  completedTodosPath = FilterValuesToPathsMap.completed
 
   userInputEle!: HTMLInputElement
 
@@ -94,9 +106,9 @@ class ToDoListPage extends Component<Props, State> {
     })
   }
 
-  static getVisibleTodos = (state: State, filter: FilterValues | undefined) => {
+  static getVisibleTodos = (state: State, filter: FilterValues) => {
     const {todos} = state
-    if (filter === undefined || filter === FilterValues.all) {
+    if (filter === FilterValues.all) {
       return todos
     }
     const visibleTodos = todos.filter((todo) => {
@@ -124,6 +136,8 @@ class ToDoListPage extends Component<Props, State> {
 
   render() { 
     const {visibleTodos} = this.state
+    const {match, location} = this.props
+    console.log(match, location)
     return (
       <s.Page>
         <s.PageContainer>
@@ -145,9 +159,9 @@ class ToDoListPage extends Component<Props, State> {
             </s.InlineContainer>)}
           </s.ToDoItemsList>
           <s.Footer>
-            <s.RouteLink to={this.allTodosPath}>All</s.RouteLink>
-            <s.RouteLink to={this.activeTodosPath}>Active</s.RouteLink>
-            <s.RouteLink to={this.completedTodosPath}>Completed</s.RouteLink>
+            <s.RouteLink isInSameLocation={location.pathname === this.allTodosPath} to={this.allTodosPath}>All</s.RouteLink>
+            <s.RouteLink isInSameLocation={location.pathname === this.activeTodosPath} to={this.activeTodosPath}>Active</s.RouteLink>
+            <s.RouteLink isInSameLocation={location.pathname === this.completedTodosPath} to={this.completedTodosPath}>Completed</s.RouteLink>
           </s.Footer>
         </s.PageContainer>
       </s.Page>

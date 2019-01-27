@@ -70,7 +70,14 @@ export const ToDoItem = styled.li<{completed: boolean}>`
   cursor: pointer;
 `
 
-export const RouteLink = styled(Link)``
+export const RouteLink = styled(Link)<{isInSameLocation: boolean}>`
+  font-size: 1em;
+  color: black;
+  ${({isInSameLocation}) => isInSameLocation && css`
+    font-size: 1.5em;
+    color: blue;
+  `};
+`
 
 export const InlineContainer = styled.div`
   display: flex;
@@ -85,6 +92,7 @@ export const ToDoItemsList = styled.ul`
 export const Footer = styled(InlineContainer)`
   padding: 0px 0.5em;
   justify-content: center;
+  align-items: center;
   ${RouteLink} {
     margin-right: 1em;
   }
