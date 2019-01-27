@@ -15,10 +15,6 @@ type State = {
   visibleTodos: Array<TodoItem>,
   currentFilter: FilterValues | undefined
 }
-
-export const AllTodosPath = `/${FilterValues.all}`
-export const ActiveTodosPath = `/${FilterValues.active}`
-export const CompletedTodosPath = `/${FilterValues.completed}`
  
 class ToDoListPage extends Component<Props, State> {
 
@@ -28,6 +24,10 @@ class ToDoListPage extends Component<Props, State> {
     const {params} = match
     this.state = {todos: [], visibleTodos: [], currentFilter: params.filter}
   }
+
+  allTodosPath = `/${FilterValues.all}`
+  activeTodosPath = `/${FilterValues.active}`
+  completedTodosPath = `/${FilterValues.completed}`
 
   userInputEle!: HTMLInputElement
 
@@ -65,7 +65,7 @@ class ToDoListPage extends Component<Props, State> {
 
   goToAllTodoPathIfCurrentlyInCompletedPath = () => {
     if (this.state.currentFilter === FilterValues.completed) {
-      this.props.history.push(AllTodosPath)
+      this.props.history.push(this.allTodosPath)
     }
   }
 
@@ -145,9 +145,9 @@ class ToDoListPage extends Component<Props, State> {
             </s.InlineContainer>)}
           </s.ToDoItemsList>
           <s.Footer>
-            <s.RouteLink to={AllTodosPath}>All</s.RouteLink>
-            <s.RouteLink to={ActiveTodosPath}>Active</s.RouteLink>
-            <s.RouteLink to={CompletedTodosPath}>Completed</s.RouteLink>
+            <s.RouteLink to={this.allTodosPath}>All</s.RouteLink>
+            <s.RouteLink to={this.activeTodosPath}>Active</s.RouteLink>
+            <s.RouteLink to={this.completedTodosPath}>Completed</s.RouteLink>
           </s.Footer>
         </s.PageContainer>
       </s.Page>
