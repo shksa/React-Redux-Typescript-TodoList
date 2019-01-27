@@ -34,7 +34,6 @@ const HoverLevitate = Levitate(theme.buttonOnHoverColor1, theme.buttonOnHoverCol
 
 
 export const AddTodoButton = styled.button`
-  padding: 1em;
   border-radius: 10px;
   cursor: pointer;
   font-weight: bolder;
@@ -46,12 +45,56 @@ export const AddTodoButton = styled.button`
   }
 `
 
+export const RouteLink = styled(NavLink)`
+  font-size: 1em;
+  color: black;
+`
+
+export const InlineContainer = styled.div`
+  display: flex;
+`
+
+export const ListContainer = styled.div`
+  overflow-y: scroll;
+`
+
+export const ToDoItemsList = styled.ul`
+  ${InlineContainer} {
+    margin: 1em 0em;
+  };
+  list-style-type: lower-greek;
+  overflow: scroll;
+`
+
+export const Footer = styled(InlineContainer)`
+  padding: 0px 0.5em;
+  justify-content: center;
+  align-items: center;
+  ${RouteLink} {
+    margin-right: 1em;
+  }
+  ${RouteLink} :last-child {
+    margin-right: 0em;
+  }
+`
+
 export const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   ${Header} {
-    margin: 1em;
+    height: 10%;
+  }
+  ${InlineContainer} {
+    height: 7%;
+  }
+  & > ${InlineContainer}:last-of-type       {
+    height: 10%;
   }
   ${UserInputField} {
     margin-right: 1em;
+  }
+  ${ListContainer} {
+    flex: 1;
   }
 `
 
@@ -62,6 +105,7 @@ export const Page = styled.div`
   justify-content: center;
   ${PageContainer} {
     margin-top: 10%;
+    margin-bottom: 15%;
   }
 `
 
@@ -76,29 +120,3 @@ export const ActiveLinkStyle: CSSObject = {
   color: 'blue',
 }
 
-export const RouteLink = styled(NavLink)`
-  font-size: 1em;
-  color: black;
-`
-
-export const InlineContainer = styled.div`
-  display: flex;
-`
-
-export const ToDoItemsList = styled.ul`
-  ${InlineContainer} {
-    margin: 1em;
-  }
-`
-
-export const Footer = styled(InlineContainer)`
-  padding: 0px 0.5em;
-  justify-content: center;
-  align-items: center;
-  ${RouteLink} {
-    margin-right: 1em;
-  }
-  ${RouteLink} :last-child {
-    margin-right: 0em;
-  }
-`

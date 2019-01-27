@@ -142,22 +142,26 @@ class ToDoListPage extends Component<Props, State> {
       <s.Page>
         <s.PageContainer>
           <s.Header>To-Do List</s.Header>
-          <s.UserInputField 
-            ref={(node) => {this.userInputEle = node as HTMLInputElement}}
-            autoFocus placeholder='write todo...' 
-            onKeyUp={this.handleUserInputFieldOnKeyUp}
-          />
-          <s.AddTodoButton onClick={this.handleAddToDoButtonOnClick}>Add ToDo</s.AddTodoButton>
-          <s.ToDoItemsList>
-            {visibleTodos.map((toDoItem, idx) => <s.InlineContainer key={idx}>
-              <s.ToDoItem 
-                onClick={() => {this.toggleToDo(idx)}}
-                completed={toDoItem.completed}
-              >
-              {toDoItem.text}
-              </s.ToDoItem>
-            </s.InlineContainer>)}
-          </s.ToDoItemsList>
+          <s.InlineContainer>
+            <s.UserInputField 
+              ref={(node) => {this.userInputEle = node as HTMLInputElement}}
+              autoFocus placeholder='write todo...' 
+              onKeyUp={this.handleUserInputFieldOnKeyUp}
+            />
+            <s.AddTodoButton onClick={this.handleAddToDoButtonOnClick}>Add ToDo</s.AddTodoButton>
+          </s.InlineContainer>
+          <s.ListContainer>
+            <s.ToDoItemsList>
+              {visibleTodos.map((toDoItem, idx) => <s.InlineContainer key={idx}>
+                <s.ToDoItem 
+                  onClick={() => {this.toggleToDo(idx)}}
+                  completed={toDoItem.completed}
+                >
+                {toDoItem.text}
+                </s.ToDoItem>
+              </s.InlineContainer>)}
+            </s.ToDoItemsList>
+          </s.ListContainer>
           <s.Footer>
             <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.allTodosPath}>All</s.RouteLink>
             <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.activeTodosPath}>Active</s.RouteLink>
