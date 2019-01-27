@@ -1,6 +1,7 @@
-import {Link} from 'react-router-dom'
+import {NavLink} from 'react-router-dom'
 import styled, {keyframes, css} from "../../styled-components";
 import { theme } from "../App/style";
+import { CSSObject } from 'styled-components';
 
 export const Header = styled.div`
   text-align: center;
@@ -70,13 +71,14 @@ export const ToDoItem = styled.li<{completed: boolean}>`
   cursor: pointer;
 `
 
-export const RouteLink = styled(Link)<{isInSameLocation: boolean}>`
+export const ActiveLinkStyle: CSSObject = {
+  fontSize: '1.5em',
+  color: 'blue',
+}
+
+export const RouteLink = styled(NavLink)`
   font-size: 1em;
   color: black;
-  ${({isInSameLocation}) => isInSameLocation && css`
-    font-size: 1.5em;
-    color: blue;
-  `};
 `
 
 export const InlineContainer = styled.div`

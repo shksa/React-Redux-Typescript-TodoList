@@ -159,9 +159,9 @@ class ToDoListPage extends Component<Props, State> {
             </s.InlineContainer>)}
           </s.ToDoItemsList>
           <s.Footer>
-            <s.RouteLink isInSameLocation={location.pathname === this.allTodosPath} to={this.allTodosPath}>All</s.RouteLink>
-            <s.RouteLink isInSameLocation={location.pathname === this.activeTodosPath} to={this.activeTodosPath}>Active</s.RouteLink>
-            <s.RouteLink isInSameLocation={location.pathname === this.completedTodosPath} to={this.completedTodosPath}>Completed</s.RouteLink>
+            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.allTodosPath}>All</s.RouteLink>
+            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.activeTodosPath}>Active</s.RouteLink>
+            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.completedTodosPath}>Completed</s.RouteLink>
           </s.Footer>
         </s.PageContainer>
       </s.Page>
