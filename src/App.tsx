@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {ThemeProvider, css} from './styled-components'
 import * as s from './AppStyle'
-import Default from './pages/default';
+import ToDoList from './pages/ToDoList';
+
 
 export default class App extends Component {
   render() {
@@ -9,9 +10,7 @@ export default class App extends Component {
       <ThemeProvider theme={s.theme}>
         <>
           <s.GlobalStyle />
-          <s.AppWrapper>
-            <Default />
-          </s.AppWrapper>
+          <ToDoList />
         </>
       </ThemeProvider>
     )

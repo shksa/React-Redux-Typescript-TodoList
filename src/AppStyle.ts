@@ -20,19 +20,11 @@ export const GlobalStyle = createGlobalStyle`
   * {
     position: relative;
     box-sizing: border-box;
-    padding: 0px;
-    margin: 0px;
   }
 `;
 
 export const theme: ThemeInterface = {
-  primaryColor: "white", 
-  primaryColorInverted: "black",
-  background: "blueviolet"
+  primaryColor: 'white',
+  primaryColorInverted: 'black',
+  background: 'beige'
 }
-
-export const AppWrapper = styled.div`
-  height: 100vh;
-  width: 100vw;
-  background-color: aliceblue;
-`
