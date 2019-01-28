@@ -2,30 +2,30 @@ import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom'
 import * as s from './style'
 import { PathParams } from '../App';
-
+import uuidv1 from 'uuid/v1'
 export interface Props extends RouteComponentProps<PathParams> {} 
 
-interface TodoItem {
+export interface TodoItem {
+  id: string
   text: string,
   completed: boolean
 }
 
-export enum FilterValues {
-  all = 'all',
-  active = 'active',
-  completed = 'completed'
+export enum VisiblityFilters {
+  SHOW_ALL = 'SHOW_ALL',
+  SHOW_ACTIVE = 'SHOW_ACTIVE',
+  SHOW_COMPLETED = 'SHOW_COMPLETED',
 }
 
-export const FilterValuesToPathsMap: {[key in FilterValues]: string} = {
-  all: `/${FilterValues.all}`,
-  active: `/${FilterValues.active}`,
-  completed: `/${FilterValues.completed}`
+export const VisibiltyFilterToPathMap: Readonly<{[key in VisiblityFilters]: string}> = {
+  SHOW_ALL: `/${VisiblityFilters.SHOW_ALL}`,
+  SHOW_ACTIVE: `/${VisiblityFilters.SHOW_ACTIVE}`,
+  SHOW_COMPLETED: `/${VisiblityFilters.SHOW_COMPLETED}`
 }
- 
-type State = {
-  todos: Array<TodoItem>,
-  visibleTodos: Array<TodoItem>,
-  currentFilter: FilterValues
+
+export type State = {
+  todos: ReadonlyArray<TodoItem>,
+  visibiltyFilter: VisiblityFilters
 }
  
 class ToDoListPage extends Component<Props, State> {
@@ -34,12 +34,8 @@ class ToDoListPage extends Component<Props, State> {
     super(props)
     const {match} = props
     const {params} = match
-    this.state = {todos: [], visibleTodos: [], currentFilter: params.filter}
+    this.state = {todos: [], visibiltyFilter: params.filter}
   }
-
-  allTodosPath = FilterValuesToPathsMap.all
-  activeTodosPath = FilterValuesToPathsMap.active
-  completedTodosPath = FilterValuesToPathsMap.completed
 
   userInputEle!: HTMLInputElement
 
@@ -72,12 +68,12 @@ class ToDoListPage extends Component<Props, State> {
     }
     this.addNewToDoItemToState(newTodoText)
     this.resetInputField()
-    this.goToAllTodoPathIfCurrentlyInCompletedPath()
+    this.goToActiveTodoPathIfCurrentlyInCompletedPath()
   }
 
-  goToAllTodoPathIfCurrentlyInCompletedPath = () => {
-    if (this.state.currentFilter === FilterValues.completed) {
-      this.props.history.push(this.allTodosPath)
+  goToActiveTodoPathIfCurrentlyInCompletedPath = () => {
+    if (this.state.visibiltyFilter === VisiblityFilters.SHOW_COMPLETED) {
+      this.props.history.push(VisibiltyFilterToPathMap.SHOW_ACTIVE)
     }
   }
 
@@ -87,32 +83,33 @@ class ToDoListPage extends Component<Props, State> {
   }
 
   addNewToDoItemToState = (newTodoText: string) => {
-    const newTodoItem: TodoItem = {text: newTodoText, completed: false}
+    const newTodoItem: TodoItem = {id: uuidv1(),text: newTodoText, completed: false}
     this.setState((prevState) => ({
-      todos: [...prevState.todos, {...newTodoItem}],
-      visibleTodos: [...prevState.visibleTodos, {...newTodoItem}]
+      todos: [...prevState.todos, newTodoItem],
     }))
   }
 
-  toggleToDo = (id: number) => {
+  toggleToDo = (id: string) => {
     this.setState((prevState) => {
-      const newTodos = [...prevState.todos]
-      const newVisibleTodos = [...prevState.visibleTodos]
-      newTodos[id] = {...newTodos[id], completed: !newTodos[id].completed}
-      newVisibleTodos[id] = {...newVisibleTodos[id], completed: !newVisibleTodos[id].completed}
+      const newTodos = prevState.todos.map(todoItem => {
+        if (todoItem.id === id) {
+          return {...todoItem, completed: !todoItem.completed}
+        }
+        return todoItem
+      })
       return {
-        todos: newTodos, visibleTodos: newVisibleTodos
+        todos: newTodos
       }
     })
   }
 
-  static getVisibleTodos = (state: State, filter: FilterValues) => {
+  getVisibleTodos = (state: State, filter: VisiblityFilters) => {
     const {todos} = state
-    if (filter === FilterValues.all) {
+    if (filter === VisiblityFilters.SHOW_ALL) {
       return todos
     }
     const visibleTodos = todos.filter((todo) => {
-      if (filter === FilterValues.active) {
+      if (filter === VisiblityFilters.SHOW_ACTIVE) {
         return todo.completed === false
       }
       return todo.completed === true
@@ -125,19 +122,16 @@ class ToDoListPage extends Component<Props, State> {
     const {params} = match
     const {filter} = params
     //check for url-path/filter change
-    if (prevState.currentFilter !== filter) {
+    if (prevState.visibiltyFilter !== filter) {
       return {
-        currentFilter: params.filter,
-        visibleTodos: ToDoListPage.getVisibleTodos(prevState, filter)
+        visibiltyFilter: filter,
       }
     }
     return null
   }
 
   render() { 
-    const {visibleTodos} = this.state
-    const {match, location} = this.props
-    console.log(match, location)
+    const visibleTodos = this.getVisibleTodos(this.state, this.state.visibiltyFilter)
     return (
       <s.Page>
         <s.PageContainer>
@@ -152,9 +146,9 @@ class ToDoListPage extends Component<Props, State> {
           </s.InlineContainer>
           <s.ListContainer>
             <s.ToDoItemsList>
-              {visibleTodos.map((toDoItem, idx) => <s.InlineContainer key={idx}>
+              {visibleTodos.map((toDoItem) => <s.InlineContainer key={toDoItem.id}>
                 <s.ToDoItem 
-                  onClick={() => {this.toggleToDo(idx)}}
+                  onClick={() => {this.toggleToDo(toDoItem.id)}}
                   completed={toDoItem.completed}
                 >
                 {toDoItem.text}
@@ -163,9 +157,9 @@ class ToDoListPage extends Component<Props, State> {
             </s.ToDoItemsList>
           </s.ListContainer>
           <s.Footer>
-            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.allTodosPath}>All</s.RouteLink>
-            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.activeTodosPath}>Active</s.RouteLink>
-            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={this.completedTodosPath}>Completed</s.RouteLink>
+            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={VisibiltyFilterToPathMap.SHOW_ALL}>All</s.RouteLink>
+            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={VisibiltyFilterToPathMap.SHOW_ACTIVE}>Active</s.RouteLink>
+            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={VisibiltyFilterToPathMap.SHOW_COMPLETED}>Completed</s.RouteLink>
           </s.Footer>
         </s.PageContainer>
       </s.Page>

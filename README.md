@@ -1,44 +1,40 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Important Points
+1. UI is most predictable when its described as a PURE FUNCTION of the application STATE. <- Poineered by REACT!
+2. Redux complements this idea by another idea, that is, the state mutations in the app need to be described as a PURE FUNCTION that      takes the prev state and the action being dispatched and returns the next state of the app.
+3. Even in large applications, there is still just a single function that manages how the next state is calculated based on the           previous state of the whole application and the action being dispatched. It does not have to be slow.
+4. This function has to be pure. This function is called the "Reducer."
 
-## Available Scripts
+## Redux
+1. Store is a primitive in redux. It contains the state, the dispatcher, and the subscriber.
+2. store.getState() returns the current state.
+3. store.subscibe(callback) executes the callback whenever the state changes. This callback should update the DOM/UI
+   so that it uses the new state. 
 
-In the project directory, you can run:
+## Reducer Testing
+1. It is important that the reducer to be a pure function.
+2. So no mutations should be made on its inputs.
+3. This should be enforced in the tests by Object.freeze().
+4. Object.freeze() should be used to test against accidental mutations of reducer inputs
 
-### `npm start`
+## Redux, UI and New state
+1. After new state is calculated, UI needs to be updated so that it uses the new state.
+2. UI updating == updating the DOM.
+3. React is great at updating the DOM.
+4. Simplest way is to use ReactDOM.render(<RootComponent state={store.getState()}>)
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Reducer Composition
+1. A function becomes hard to understand if it does to many things, it should ideally concern itself with only one thing.
+2. A single reducer function becomes very hard to understand if it contains the logic for all the calculations of the next state.
+3. This is not a problem unique to Redux. Any time a function does too many things, you want to extract other functions from it, and      call them so that every function only addresses a single concern.
+4. Reducers are also normal JavaScript functions, so they can call other reducers to delegate and abstract away handling of updates of    some parts of this tree they manage. 
+5. Different reducers specify how different parts of the state tree are updated in response to actions.
+6. This pattern can be applied many times, and while there is still a single top level reducer managing the state of your app, you        will find it convenient to express it as many reducers call on each other, each contribution to a part of the applications state       tree.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Combining Reducers and Initializing the state.
+1. As more data is introduced to the app state, the app reducer grows.
+2. To store a new peice of information in the app state, you don't need to change the existing reducers.
+3. You can use the reducer composition pattern and create a new reducer that calls the existing reducers to manage parts of its state     and combines the results in a single state object.
+4. When the top-level/app reducer is run for the first time, it will pass 'undefined' as the state of the child reducers because the      initial state of the combined reducer is an empty object, so all its fields are 'undefined'. 
+5. This gets the child reducers to return their initial states and populates the state object for the first time.
+6. When an action comes in, the top-level/app reducer calls the child reducers with the parts of the state that they manage and the       action and combines the results into the new state object.
+7. The initial state of the combined reducer now contains the initial states of independent reducers. Any time an action comes in         those reducers handle the action independently.

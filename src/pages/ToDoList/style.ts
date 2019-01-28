@@ -110,9 +110,12 @@ export const Page = styled.div`
 `
 
 export const ToDoItem = styled.li<{completed: boolean}>`
-  font-size: 1em;
+  font-size: 1.5em;
   text-decoration: ${({completed}) => completed && 'line-through'};
-  cursor: pointer;
+  cursor: pointer; 
+  :active {
+    text-decoration: ${({completed}) => completed ? 'none' : 'line-through'};
+  }
 `
 
 export const ActiveLinkStyle: CSSObject = {

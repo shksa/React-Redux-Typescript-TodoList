@@ -2,21 +2,21 @@ import React, {Component} from "react";
 import { BrowserRouter as Router, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import {ThemeProvider, css} from '../../styled-components'
 import * as s from './style'
-import ToDoListPage, {FilterValues, FilterValuesToPathsMap} from '../ToDoList';
+import ToDoListPage, {VisiblityFilters, VisibiltyFilterToPathMap} from '../ToDoList';
 
 
 export interface PathParams {
-  filter: FilterValues
+  filter: VisiblityFilters
 }
 
-const SetOfPathsWithValidFilterValues = new Set(Object.values(FilterValuesToPathsMap))
+const SetOfPathsWithValidFilterValues = new Set(Object.values(VisibiltyFilterToPathMap))
 
 const RoutedApp = (props: RouteComponentProps) => {
   const pathName = props.location.pathname
   if (SetOfPathsWithValidFilterValues.has(pathName)) {
     return <Route path='/:filter' component={ToDoListPage} />
   }
-  return <Redirect to='/all' />
+  return <Redirect to='/SHOW_ALL' />
 }
 
 export default class App extends Component {
