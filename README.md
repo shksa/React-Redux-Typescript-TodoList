@@ -38,3 +38,4 @@
 5. This gets the child reducers to return their initial states and populates the state object for the first time.
 6. When an action comes in, the top-level/app reducer calls the child reducers with the parts of the state that they manage and the       action and combines the results into the new state object.
 7. The initial state of the combined reducer now contains the initial states of independent reducers. Any time an action comes in         those reducers handle the action independently.
+8. Redux comes with combineReducers utility that combines reducers and creates a new reducer which returns a new state object             combined from the results of the reducers.

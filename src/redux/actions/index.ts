@@ -1,4 +1,4 @@
-import { TodoItem, VisiblityFilters } from "../pages/ToDoList";
+import { TodoItem, VisiblityFilters } from "../../pages/ToDoList";
 
 export type AddTodoAction = {
   id: string,

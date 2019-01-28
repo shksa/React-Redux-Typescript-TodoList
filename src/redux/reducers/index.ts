@@ -1,5 +1,6 @@
 import { State, VisiblityFilters, TodoItem } from "../../pages/ToDoList";
 import { Action } from "../actions";
+import {combineReducers} from 'redux'
 
 const defaultState: State = {todos: [], visibiltyFilter: VisiblityFilters.SHOW_ALL}
 
@@ -8,6 +9,9 @@ Reducer
 1. Function that calculates the next state tree based on the previous state tree and the action being dispatched.
 2. This function HAS to be PURE.
 3. The next state has to be a new object, not a modification of the same previous state object.
+4. The reducers may never return undefined for any action. 
+5. Instead, they should return their initial state if the state passed to them was undefined, and the current state 
+    for any unrecognized action.
 */
 
 /**
@@ -39,7 +43,7 @@ export const TodoItemReducer = (prevState: Readonly<TodoItem> | undefined, actio
  * @param prevState An array of todo items
  * @param action Primarily ADD_TODO, TOGGLE_TODO actions, contains a default return for any other action
  */
-export const TodoListReducer = (prevState: ReadonlyArray<TodoItem>, action: Readonly<Action>): Array<TodoItem> => {
+export const TodoListReducer = (prevState: ReadonlyArray<TodoItem> = [], action: Readonly<Action>): Array<TodoItem> => {
   switch (action.type) {
     case 'ADD_TODO':
       return [...prevState, TodoItemReducer(undefined, action)]
@@ -52,25 +56,12 @@ export const TodoListReducer = (prevState: ReadonlyArray<TodoItem>, action: Read
   }
 }
 
-export const VisibilityFilterReducer = (prevState: VisiblityFilters, action: Readonly<Action>): VisiblityFilters => {
+export const VisibilityFilterReducer = (prevState: VisiblityFilters = VisiblityFilters.SHOW_ALL, action: Readonly<Action>): VisiblityFilters => {
   switch (action.type) {
     case 'CHANGE_VISIBITY_FILTER':
       return action.visibilityFilter
   
     default:
       return prevState
-  }
-}
-
-/**
- * AppReducer manages the state of the whole app. It delegates the management of different parts of the state tree to different reducers.
- * It uses other reducers in order to produce the new app state.
- * @param prevState The entire app's state
- * @param action 
- */
-export const AppReducer = (prevState: Readonly<State> = defaultState, action: Readonly<Action>): State => {
-  return {
-    todos: TodoListReducer(prevState.todos, action),
-    visibiltyFilter: VisibilityFilterReducer(prevState.visibiltyFilter, action)
   }
 }

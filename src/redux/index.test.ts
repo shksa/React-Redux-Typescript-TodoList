@@ -1,6 +1,6 @@
 import {AppReducer} from './index'
-import { State, VisiblityFilters } from '../../pages/ToDoList';
-import * as actions from '../actions';
+import { State, VisiblityFilters } from '../pages/ToDoList';
+import * as actions from './actions';
 
 describe('AppReducer should be pure and return new state from prev state and an action', () => {
   test('AppReducer should return new state with new todo item', () => {
