@@ -1,8 +1,8 @@
-import { State, VisiblityFilters, TodoItem } from "../../pages/ToDoList";
+import { AppState, VisiblityFilters, TodoItem } from '../index.d';
 import { Action } from "../actions";
 import {combineReducers} from 'redux'
 
-const defaultState: State = {todos: [], visibiltyFilter: VisiblityFilters.SHOW_ALL}
+const defaultState: AppState = {todos: [], visibiltyFilter: VisiblityFilters.SHOW_ALL}
 
 /*
 Reducer
@@ -18,7 +18,7 @@ Reducer
  * TodoItemReducer manages all the single todo objects in the app's state tree. This reducer does the job of creating and updating a todo
  * in response to the ADD_TODO, TOGGLE_TODO actions.
  * @param prevState A single todo item
- * @param action Primarily ADD_TODO, TOGGLE_TODO actions, contains a default return for any other action
+ * @param action Primarily ADD_TODO, TOGGLE_TODO actions, but handles any other action also.
  */
 export const TodoItemReducer = (prevState: Readonly<TodoItem> | undefined, action: Readonly<Action>): TodoItem => {
   switch (action.type) {
@@ -41,7 +41,7 @@ export const TodoItemReducer = (prevState: Readonly<TodoItem> | undefined, actio
  * TodoListReducer manages the array of todos in the app's state tree. This reducer does the job of adding a new todo to the list and
  * toggling an existing todo in the list in response to the ADD_TODO, TOGGLE_TODO actions.
  * @param prevState An array of todo items
- * @param action Primarily ADD_TODO, TOGGLE_TODO actions, contains a default return for any other action
+ * @param action Primarily ADD_TODO, TOGGLE_TODO actions, but handles any other action also.
  */
 export const TodoListReducer = (prevState: ReadonlyArray<TodoItem> = [], action: Readonly<Action>): Array<TodoItem> => {
   switch (action.type) {
@@ -56,6 +56,11 @@ export const TodoListReducer = (prevState: ReadonlyArray<TodoItem> = [], action:
   }
 }
 
+/**
+ * VisibilityFilterReducer manages the visibility filter in the app's state tree.
+ * @param prevState The visibility filter
+ * @param action Primarily 'CHANGE_VISIBITY_FILTER', but handles any other action also.
+ */
 export const VisibilityFilterReducer = (prevState: VisiblityFilters = VisiblityFilters.SHOW_ALL, action: Readonly<Action>): VisiblityFilters => {
   switch (action.type) {
     case 'CHANGE_VISIBITY_FILTER':

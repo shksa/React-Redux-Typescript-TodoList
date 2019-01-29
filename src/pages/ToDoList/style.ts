@@ -2,6 +2,7 @@ import {NavLink} from 'react-router-dom'
 import styled, {keyframes, css} from "../../styled-components";
 import { theme } from "../App/style";
 import { CSSObject } from 'styled-components';
+import { VisiblityFilters } from '../../redux/index.d';
 
 export const Header = styled.div`
   text-align: center;
@@ -45,9 +46,14 @@ export const AddTodoButton = styled.button`
   }
 `
 
-export const RouteLink = styled(NavLink)`
+export const FilterLink = styled('a')<{filter: VisiblityFilters,currentFilter: VisiblityFilters}>`
+  ${({filter, currentFilter}) => filter === currentFilter && css`
+    font-size: 1.5em;
+    color: red;
+  `};
   font-size: 1em;
-  color: black;
+  color: blue;
+  cursor: pointer;
 `
 
 export const InlineContainer = styled.div`
@@ -70,10 +76,10 @@ export const Footer = styled(InlineContainer)`
   padding: 0px 0.5em;
   justify-content: center;
   align-items: center;
-  ${RouteLink} {
+  ${FilterLink} {
     margin-right: 1em;
   }
-  ${RouteLink} :last-child {
+  ${FilterLink} :last-child {
     margin-right: 0em;
   }
 `

@@ -1,38 +1,50 @@
-import React, {Component} from "react";
-import { BrowserRouter as Router, Route, Redirect, RouteComponentProps } from "react-router-dom";
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom'
+// import { BrowserRouter as Router, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import {ThemeProvider, css} from '../../styled-components'
 import * as s from './style'
-import ToDoListPage, {VisiblityFilters, VisibiltyFilterToPathMap} from '../ToDoList';
+import ToDoListPage, {VisibiltyFilterToPathMap} from '../ToDoList';
+import {createStore} from 'redux'
+import {AppReducer} from '../../redux/index'
+import {AppState} from '../../redux/index.d'
 
+export const ReduxStore = createStore(AppReducer)
 
-export interface PathParams {
-  filter: VisiblityFilters
+// export interface PathParams {
+//   filter: VisiblityFilters
+// }
+
+// const SetOfPathsWithValidFilterValues = new Set(Object.values(VisibiltyFilterToPathMap))
+
+// const RoutedApp = (props: RouteComponentProps) => {
+//   const pathName = props.location.pathname
+//   if (SetOfPathsWithValidFilterValues.has(pathName)) {
+//     return <Route path='/:filter' component={ToDoListPage} />
+//   }
+//   return <Redirect to='/SHOW_ALL' />
+// }
+
+interface Props extends Readonly<AppState> {}
+
+export default function App(props: Props) {
+  return (
+    // <Router>
+      <ThemeProvider theme={s.theme}>
+        <>
+          <s.GlobalStyle />
+          <ToDoListPage {...props} />
+          {/* <Route component={RoutedApp} /> */}
+        </>
+      </ThemeProvider>
+    // </Router>
+  )
 }
 
-const SetOfPathsWithValidFilterValues = new Set(Object.values(VisibiltyFilterToPathMap))
-
-const RoutedApp = (props: RouteComponentProps) => {
-  const pathName = props.location.pathname
-  if (SetOfPathsWithValidFilterValues.has(pathName)) {
-    return <Route path='/:filter' component={ToDoListPage} />
-  }
-  return <Redirect to='/SHOW_ALL' />
+export const RenderApp = () => {
+  ReactDOM.render(<App {...ReduxStore.getState()} />, document.getElementById('root'))
 }
 
-export default class App extends Component {
-  render() {
-    return (
-      <Router>
-        <ThemeProvider theme={s.theme}>
-          <>
-            <s.GlobalStyle />
-            <Route component={RoutedApp} />
-          </>
-        </ThemeProvider>
-      </Router>
-    )
-  }
-}
+ReduxStore.subscribe(RenderApp)
 
 /*
 Route Rendering Props

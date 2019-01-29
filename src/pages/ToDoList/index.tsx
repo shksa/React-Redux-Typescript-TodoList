@@ -1,21 +1,14 @@
 import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom'
 import * as s from './style'
-import { PathParams } from '../App';
+// import { PathParams } from '../App';
 import uuidv1 from 'uuid/v1'
-export interface Props extends RouteComponentProps<PathParams> {} 
+import {TodoItem, VisiblityFilters, AppState} from '../../redux/index.d'
+import {ReduxStore} from '../App'
+import * as actions from '../../redux/actions'
 
-export interface TodoItem {
-  id: string
-  text: string,
-  completed: boolean
-}
 
-export enum VisiblityFilters {
-  SHOW_ALL = 'SHOW_ALL',
-  SHOW_ACTIVE = 'SHOW_ACTIVE',
-  SHOW_COMPLETED = 'SHOW_COMPLETED',
-}
+export interface Props extends AppState {} 
 
 export const VisibiltyFilterToPathMap: Readonly<{[key in VisiblityFilters]: string}> = {
   SHOW_ALL: `/${VisiblityFilters.SHOW_ALL}`,
@@ -23,19 +16,9 @@ export const VisibiltyFilterToPathMap: Readonly<{[key in VisiblityFilters]: stri
   SHOW_COMPLETED: `/${VisiblityFilters.SHOW_COMPLETED}`
 }
 
-export type State = {
-  todos: ReadonlyArray<TodoItem>,
-  visibiltyFilter: VisiblityFilters
-}
- 
-class ToDoListPage extends Component<Props, State> {
 
-  constructor(props: Props) {
-    super(props)
-    const {match} = props
-    const {params} = match
-    this.state = {todos: [], visibiltyFilter: params.filter}
-  }
+ 
+class ToDoListPage extends Component<Props, {}> {
 
   userInputEle!: HTMLInputElement
 
@@ -68,14 +51,14 @@ class ToDoListPage extends Component<Props, State> {
     }
     this.addNewToDoItemToState(newTodoText)
     this.resetInputField()
-    this.goToActiveTodoPathIfCurrentlyInCompletedPath()
+    // this.goToActiveTodoPathIfCurrentlyInCompletedPath()
   }
 
-  goToActiveTodoPathIfCurrentlyInCompletedPath = () => {
-    if (this.state.visibiltyFilter === VisiblityFilters.SHOW_COMPLETED) {
-      this.props.history.push(VisibiltyFilterToPathMap.SHOW_ACTIVE)
-    }
-  }
+  // goToActiveTodoPathIfCurrentlyInCompletedPath = () => {
+  //   if (this.state.visibiltyFilter === VisiblityFilters.SHOW_COMPLETED) {
+  //     this.props.history.push(VisibiltyFilterToPathMap.SHOW_ACTIVE)
+  //   }
+  // }
 
   resetInputField = () => {
     this.userInputEle.value = ""
@@ -83,55 +66,51 @@ class ToDoListPage extends Component<Props, State> {
   }
 
   addNewToDoItemToState = (newTodoText: string) => {
-    const newTodoItem: TodoItem = {id: uuidv1(),text: newTodoText, completed: false}
-    this.setState((prevState) => ({
-      todos: [...prevState.todos, newTodoItem],
-    }))
+    const id = uuidv1()
+    ReduxStore.dispatch(actions.ADD_TODO(id, newTodoText))
   }
 
   toggleToDo = (id: string) => {
-    this.setState((prevState) => {
-      const newTodos = prevState.todos.map(todoItem => {
-        if (todoItem.id === id) {
-          return {...todoItem, completed: !todoItem.completed}
-        }
-        return todoItem
-      })
-      return {
-        todos: newTodos
-      }
-    })
+    ReduxStore.dispatch(actions.TOGGLE_TODO(id))
   }
 
-  getVisibleTodos = (state: State, filter: VisiblityFilters) => {
-    const {todos} = state
-    if (filter === VisiblityFilters.SHOW_ALL) {
-      return todos
+  getVisibleTodos = (todos: ReadonlyArray<TodoItem>, filter: VisiblityFilters): ReadonlyArray<TodoItem> => {
+    switch (filter) {
+      case VisiblityFilters.SHOW_ALL:
+        return todos
+      
+      case VisiblityFilters.SHOW_ACTIVE:
+        return todos.filter((todo) => {
+          return !todo.completed
+        })
+      
+      case VisiblityFilters.SHOW_COMPLETED:
+        return todos.filter(todo => {
+          return todo.completed
+        })
     }
-    const visibleTodos = todos.filter((todo) => {
-      if (filter === VisiblityFilters.SHOW_ACTIVE) {
-        return todo.completed === false
-      }
-      return todo.completed === true
-    })
-    return visibleTodos
   }
 
-  static getDerivedStateFromProps: React.GetDerivedStateFromProps<Props, State> = (nextProps, prevState) => {
-    const {match} = nextProps
-    const {params} = match
-    const {filter} = params
-    //check for url-path/filter change
-    if (prevState.visibiltyFilter !== filter) {
-      return {
-        visibiltyFilter: filter,
-      }
-    }
-    return null
+  // static getDerivedStateFromProps: React.GetDerivedStateFromProps<Props, State> = (nextProps, prevState) => {
+  //   const {match} = nextProps
+  //   const {params} = match
+  //   const {filter} = params
+  //   //check for url-path/filter change
+  //   if (prevState.visibiltyFilter !== filter) {
+  //     return {
+  //       visibiltyFilter: filter,
+  //     }
+  //   }
+  //   return null
+  // }
+
+  showFilteredTodos = (filter: VisiblityFilters) => {
+    ReduxStore.dispatch(actions.CHANGE_VISIBILITY_FILTER(filter))
   }
 
   render() { 
-    const visibleTodos = this.getVisibleTodos(this.state, this.state.visibiltyFilter)
+    const {todos, visibiltyFilter} = this.props
+    const visibleTodos = this.getVisibleTodos(todos, visibiltyFilter)
     return (
       <s.Page>
         <s.PageContainer>
@@ -157,9 +136,21 @@ class ToDoListPage extends Component<Props, State> {
             </s.ToDoItemsList>
           </s.ListContainer>
           <s.Footer>
-            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={VisibiltyFilterToPathMap.SHOW_ALL}>All</s.RouteLink>
-            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={VisibiltyFilterToPathMap.SHOW_ACTIVE}>Active</s.RouteLink>
-            <s.RouteLink activeStyle={s.ActiveLinkStyle} to={VisibiltyFilterToPathMap.SHOW_COMPLETED}>Completed</s.RouteLink>
+            <s.FilterLink 
+              filter={VisiblityFilters.SHOW_ALL} 
+              currentFilter={visibiltyFilter}
+              onClick={() => this.showFilteredTodos(VisiblityFilters.SHOW_ALL)}
+            >All</s.FilterLink>
+            <s.FilterLink 
+              filter={VisiblityFilters.SHOW_ACTIVE}
+              currentFilter={visibiltyFilter}
+              onClick={() => this.showFilteredTodos(VisiblityFilters.SHOW_ACTIVE)}
+            >Active</s.FilterLink>
+            <s.FilterLink 
+              filter={VisiblityFilters.SHOW_COMPLETED}
+              currentFilter={visibiltyFilter} 
+              onClick={() => this.showFilteredTodos(VisiblityFilters.SHOW_COMPLETED)}
+            >Completed</s.FilterLink>
           </s.Footer>
         </s.PageContainer>
       </s.Page>
