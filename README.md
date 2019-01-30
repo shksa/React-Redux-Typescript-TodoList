@@ -44,3 +44,7 @@
 1. Presentaional components don't specify any behaviors, and are only concerned with how things look or how they render.
 2. Container components actually pass the data from the store and specify the behavior for the presentaional components
 3. Behaviour means dispatching an action.
+4. Container components can be a class component or a function component. It just needs to provide behavior for the
+   presentational components that it will render.
+5. One big advantage of presentational components is that, in future you can change the state manager from redux to relay
+   or whatever and you dont have to modify those components. They will behave the same regardless of the state manager.
