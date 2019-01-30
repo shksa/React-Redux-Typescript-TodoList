@@ -1,14 +1,15 @@
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
 // import { BrowserRouter as Router, Route, Redirect, RouteComponentProps } from "react-router-dom";
-import {ThemeProvider, css} from '../../styled-components'
-import * as s from './style'
-import ToDoListPage, {VisibiltyFilterToPathMap} from '../ToDoList';
-import {createStore} from 'redux'
-import {AppReducer} from '../../redux/index'
-import {AppState} from '../../redux/index.d'
+import { ThemeProvider } from "emotion-theming";
+import {Global} from "@emotion/core"
+import * as s from "./style";
+import { createStore } from "redux";
+import { AppState } from "../../redux/types";
+import { AppReducer } from "../../redux";
+import HomePage from "../Home";
 
-export const ReduxStore = createStore(AppReducer)
+export const ReduxStore = createStore(AppReducer);
 
 // export interface PathParams {
 //   filter: VisiblityFilters
@@ -24,27 +25,26 @@ export const ReduxStore = createStore(AppReducer)
 //   return <Redirect to='/SHOW_ALL' />
 // }
 
-interface Props extends Readonly<AppState> {}
-
-export default function App(props: Props) {
+export default function App(props: AppState) {
   return (
     // <Router>
-      <ThemeProvider theme={s.theme}>
-        <>
-          <s.GlobalStyle />
-          <ToDoListPage {...props} />
-          {/* <Route component={RoutedApp} /> */}
-        </>
-      </ThemeProvider>
+    <ThemeProvider theme={s.theme}>
+      <Global styles={s.GlobalCSS} />
+      <HomePage {...props} />
+      {/* <Route component={RoutedApp} /> */}
+    </ThemeProvider>
     // </Router>
-  )
+  );
 }
 
 export const RenderApp = () => {
-  ReactDOM.render(<App {...ReduxStore.getState()} />, document.getElementById('root'))
-}
+  ReactDOM.render(
+    <App {...ReduxStore.getState()} />,
+    document.getElementById("root")
+  );
+};
 
-ReduxStore.subscribe(RenderApp)
+ReduxStore.subscribe(RenderApp);
 
 /*
 Route Rendering Props

@@ -1,7 +1,9 @@
 import * as reducers from './reducers'
 import {combineReducers} from 'redux'
 import { Action } from './actions';
-import { AppState } from './index.d'
+import {AppState} from './types'
+
+
 
 // /**
 //  * AppReducer manages the state of the whole app. It delegates the management of different parts of the state tree to different reducers.
@@ -28,7 +30,7 @@ const combineReducers = (statePropertyToReducerMap) => {
 */
 
 
-export const AppReducer = combineReducers<Readonly<AppState>, Readonly<Action>>({
-  todos: reducers.TodoListReducer,
-  visibiltyFilter: reducers.VisibilityFilterReducer
+export const AppReducer = combineReducers<AppState, Action>({
+  todoList: reducers.TodoListReducer,
+  filter: reducers.VisibilityFilterReducer
 })

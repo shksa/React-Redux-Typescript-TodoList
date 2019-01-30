@@ -1,6 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {RenderApp} from './pages/App';
+import {RenderApp} from './containers/App';
 import * as serviceWorker from './serviceWorker';
 
 RenderApp()

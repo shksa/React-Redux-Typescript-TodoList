@@ -1,9 +1,5 @@
-import { AppState, VisiblityFilters, TodoItem } from '../index.d';
+import { TodoItem, TodoList, Filter } from '../types';
 import { Action } from "../actions";
-import {combineReducers} from 'redux'
-
-const defaultState: AppState = {todos: [], visibiltyFilter: VisiblityFilters.SHOW_ALL}
-
 /*
 Reducer
 1. Function that calculates the next state tree based on the previous state tree and the action being dispatched.
@@ -18,15 +14,15 @@ Reducer
  * TodoItemReducer manages all the single todo objects in the app's state tree. This reducer does the job of creating and updating a todo
  * in response to the ADD_TODO, TOGGLE_TODO actions.
  * @param prevState A single todo item
- * @param action Primarily ADD_TODO, TOGGLE_TODO actions, but handles any other action also.
+ * @param action Primarily A  DD_TODO, TOGGLE_TODO actions, but handles any other action also.
  */
-export const TodoItemReducer = (prevState: Readonly<TodoItem> | undefined, action: Readonly<Action>): TodoItem => {
+export const TodoItemReducer = (prevState: TodoItem | undefined, action: Action): TodoItem => {
   switch (action.type) {
     case 'ADD_TODO':
       return {id: action.id, text: action.text, completed: false} // Creating a new todoItem
   
     case 'TOGGLE_TODO':
-      prevState = prevState as Readonly<TodoItem>
+      prevState = prevState as TodoItem
       if (action.id !== prevState.id) {
         return prevState
       }
@@ -43,7 +39,7 @@ export const TodoItemReducer = (prevState: Readonly<TodoItem> | undefined, actio
  * @param prevState An array of todo items
  * @param action Primarily ADD_TODO, TOGGLE_TODO actions, but handles any other action also.
  */
-export const TodoListReducer = (prevState: ReadonlyArray<TodoItem> = [], action: Readonly<Action>): Array<TodoItem> => {
+export const TodoListReducer = (prevState: TodoList = [], action: Action): TodoList => {
   switch (action.type) {
     case 'ADD_TODO':
       return [...prevState, TodoItemReducer(undefined, action)]
@@ -52,7 +48,7 @@ export const TodoListReducer = (prevState: ReadonlyArray<TodoItem> = [], action:
       return prevState.map(todoItem => TodoItemReducer(todoItem, action))
   
     default:
-      return (prevState as Array<TodoItem>)
+      return prevState
   }
 }
 
@@ -61,7 +57,7 @@ export const TodoListReducer = (prevState: ReadonlyArray<TodoItem> = [], action:
  * @param prevState The visibility filter
  * @param action Primarily 'CHANGE_VISIBITY_FILTER', but handles any other action also.
  */
-export const VisibilityFilterReducer = (prevState: VisiblityFilters = VisiblityFilters.SHOW_ALL, action: Readonly<Action>): VisiblityFilters => {
+export const VisibilityFilterReducer = (prevState: Filter = Filter.SHOW_ALL, action: Action): Filter => {
   switch (action.type) {
     case 'CHANGE_VISIBITY_FILTER':
       return action.visibilityFilter

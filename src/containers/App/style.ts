@@ -1,7 +1,6 @@
-import styled, {createGlobalStyle} from '../../styled-components'
-import ThemeInterface from '../../styled-components/theme'
+import {css} from "@emotion/core"
 
-export const GlobalStyle = createGlobalStyle`
+export const GlobalCSS = css`
   body {
     margin: 0;
     padding: 0;
@@ -23,7 +22,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export const theme: ThemeInterface = {
+export const theme = {
   primaryColor: 'white',
   primaryColorInverted: 'black',
   background: 'beige',
