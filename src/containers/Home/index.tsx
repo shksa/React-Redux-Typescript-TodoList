@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, FunctionComponent } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import * as s from "./style";
 // import { PathParams } from '../App';
@@ -53,7 +53,7 @@ const getVisibleTodos = (todos: t.TodoList, filter: t.Filter): t.TodoList => {
 
 
 
-export default function HomePage({ todoList, filter }: Props) {
+const HomePage: FunctionComponent<t.AppState> = ({ todoList, filter }) => {
   return (
     <s.Page>
       <s.PageContainer>
@@ -62,7 +62,7 @@ export default function HomePage({ todoList, filter }: Props) {
           onFilterClick={changeFilter}
           currentFilter={filter}
         />
-        <s.StyledAddTodo addNewTodoItem={addNewTodoItem} />
+        <s.StyledAddTodo onAddNewTodo={addNewTodoItem} />
         <s.ListContainer>
           <TodoList visibleTodos={getVisibleTodos(todoList, filter)} onTodoClick={toggleTodoItem} />
         </s.ListContainer>
@@ -70,3 +70,5 @@ export default function HomePage({ todoList, filter }: Props) {
     </s.Page>
   );
 }
+
+export default HomePage

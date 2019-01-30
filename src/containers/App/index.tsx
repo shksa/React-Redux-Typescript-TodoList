@@ -1,8 +1,8 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 // import { BrowserRouter as Router, Route, Redirect, RouteComponentProps } from "react-router-dom";
 import { ThemeProvider } from "emotion-theming";
-import {Global} from "@emotion/core"
+import { Global } from "@emotion/core";
 import * as s from "./style";
 import { createStore } from "redux";
 import { AppState } from "../../redux/types";
@@ -25,24 +25,21 @@ export const ReduxStore = createStore(AppReducer);
 //   return <Redirect to='/SHOW_ALL' />
 // }
 
-export default function App(props: AppState) {
-  return (
-    // <Router>
-    <ThemeProvider theme={s.theme}>
-      <Global styles={s.GlobalCSS} />
-      <HomePage {...props} />
-      {/* <Route component={RoutedApp} /> */}
-    </ThemeProvider>
-    // </Router>
-  );
-}
+const App: FunctionComponent<AppState> = ({children, ...appState}) => (
+  // <Router>
+  <ThemeProvider theme={s.theme}>
+    <Global styles={s.GlobalCSS} />
+    <HomePage {...appState} />
+    {/* <Route component={RoutedApp} /> */}
+  </ThemeProvider>
+  // </Router>
+);
 
-export const RenderApp = () => {
-  ReactDOM.render(
+export const RenderApp = () =>
+  ReactDOM.render<typeof App>(
     <App {...ReduxStore.getState()} />,
     document.getElementById("root")
   );
-};
 
 ReduxStore.subscribe(RenderApp);
 

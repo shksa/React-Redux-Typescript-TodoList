@@ -1,24 +1,27 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import * as s from "./style";
 
-const handleUserInputFieldOnKeyUp = (evt: React.KeyboardEvent<HTMLInputElement>, addNewTodoItem: (text: string) => void) => {
+const handleUserInputFieldOnKeyUp = (
+  evt: React.KeyboardEvent<HTMLInputElement>,
+  addNewTodoItem: (text: string) => void
+) => {
   const keyPressed = evt.key;
   if (keyPressed !== "Enter") {
     return;
   }
   const newTodoText = evt.currentTarget.value;
-  const isValid = isUserInputValid(newTodoText)
+  const isValid = isUserInputValid(newTodoText);
   if (isValid) {
-    addNewTodoItem(newTodoText)
+    addNewTodoItem(newTodoText);
   } else {
-    alertUserOfInvalidInput()
+    alertUserOfInvalidInput();
   }
-  resetInputField(evt.currentTarget)
+  resetInputField(evt.currentTarget);
 };
 
 const alertUserOfInvalidInput = () => {
-  alert("empty item!")
-}
+  alert("empty item!");
+};
 
 const isUserInputValid = (newTodoText: string) => {
   if (newTodoText === "") {
@@ -27,15 +30,18 @@ const isUserInputValid = (newTodoText: string) => {
   return true;
 };
 
-const handleAddToDoButtonOnClick = (userInputEle: HTMLInputElement, addNewTodoItem: (text: string) => void) => {
+const handleAddToDoButtonOnClick = (
+  userInputEle: HTMLInputElement,
+  addNewTodoItem: (text: string) => void
+) => {
   const newTodoText = userInputEle.value;
-  const isValid = isUserInputValid(newTodoText)
+  const isValid = isUserInputValid(newTodoText);
   if (isValid) {
-    addNewTodoItem(newTodoText)
+    addNewTodoItem(newTodoText);
   } else {
-    alertUserOfInvalidInput()
+    alertUserOfInvalidInput();
   }
-  resetInputField(userInputEle)
+  resetInputField(userInputEle);
 };
 
 const resetInputField = (element: HTMLInputElement) => {
@@ -44,12 +50,12 @@ const resetInputField = (element: HTMLInputElement) => {
 };
 
 interface Props {
-  addNewTodoItem: (text: string) => void,
-  className?: string
+  onAddNewTodo: (text: string) => void;
+  className?: string;
 }
 
-export default function AddTodo({addNewTodoItem, className}: Props) {
-  let userInputEle: HTMLInputElement
+const AddTodo: FunctionComponent<Props> = ({ onAddNewTodo, className }) => {
+  let userInputEle: HTMLInputElement;
   return (
     <s.TodoInputAndButtonContainer className={className}>
       <s.UserInputField
@@ -58,11 +64,15 @@ export default function AddTodo({addNewTodoItem, className}: Props) {
         }}
         autoFocus
         placeholder="write todo..."
-        onKeyUp={(e) => handleUserInputFieldOnKeyUp(e, addNewTodoItem)}
+        onKeyUp={e => handleUserInputFieldOnKeyUp(e, onAddNewTodo)}
       />
-      <s.AddTodoButton onClick={() => handleAddToDoButtonOnClick(userInputEle, addNewTodoItem)}>
+      <s.AddTodoButton
+        onClick={() => handleAddToDoButtonOnClick(userInputEle, onAddNewTodo)}
+      >
         Add ToDo
       </s.AddTodoButton>
     </s.TodoInputAndButtonContainer>
   );
-}
+};
+
+export default AddTodo;
