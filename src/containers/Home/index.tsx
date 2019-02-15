@@ -52,7 +52,14 @@ const getVisibleTodos = (todos: t.TodoList, filter: t.Filter): t.TodoList => {
 };
 
 
-
+/**
+ * HomePage is a container component. It specifies 4 kinds of behavior.
+ * 1. What should happen when addTodo button is clicked?
+ * 2. How should the todos be filterd?
+ * 3. What should happen when a todo is clicked?
+ * 3. What should happen when a filter is clicked?
+ * @param
+ */
 const HomePage: FunctionComponent<t.AppState> = ({ todoList, filter }) => {
   return (
     <s.Page>
